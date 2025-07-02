@@ -9,7 +9,7 @@ import {
   CartesianGrid,
   Legend,
 } from "recharts";
-import { adminBackup, getDashboardStats } from "../services/api";
+import {  getDashboardStats } from "../services/api";
 import toast from "react-hot-toast";
 import AdminBackupButton from "./AdminBackupButton";
 
@@ -50,7 +50,7 @@ export default function Dashboard() {
   };
 
   const chartCards = Object.entries(stats)
-    .filter(([key, val]) => typeof val === "object" && !Array.isArray(val))
+    .filter(([key, val]) => typeof val === "object" && !Array.isArray(val) && key)
     .map(([title, statObj], index) => (
       <div
         key={index}

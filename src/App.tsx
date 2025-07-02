@@ -1,5 +1,5 @@
 
-import { Routes, Route, Link } from "react-router";
+import { Routes, Route } from "react-router";
 import LoginPage from "./pages/Login";
 import Layout from "./components/Layout";
 import UserManagement from "./components/UserManagement";

@@ -43,7 +43,7 @@ export default function UserManagement() {
   const [isCreating, setIsCreating] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState<any>({});
-
+  console.log({email:selectedUser?.email})
   const fetchData = async () => {
     const { users } = await getAllUsers();
     const { departments } = await getAllDepartments();

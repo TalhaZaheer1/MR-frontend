@@ -30,6 +30,7 @@ export default function MaterialManagement() {
   const [selectedMaterial, setSelectedMaterial] = useState<Material | null>(
     null,
   );
+console.log(selectedMaterial);
   const [showFormModal, setShowFormModal] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [form, setForm] = useState<any>({});
