@@ -17,7 +17,12 @@ const QuotationRequestManagement = () => {
   const [materials, setMaterials] = useState<any[]>([]);
   const [suppliers, setSuppliers] = useState<any[]>([]);
   const [showModal, setShowModal] = useState(false);
-  const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState<{
+dueDate:string,
+items:any,
+suppliers:any,
+notes:string
+}>({
     dueDate: "",
     items: [],
     suppliers: [],
@@ -77,7 +82,7 @@ const QuotationRequestManagement = () => {
     e: React.ChangeEvent<HTMLInputElement>,
   ) => {
     const { name, value } = e.target;
-    const updatedItems = [...formData.items];
+    const updatedItems:any = [...formData.items];
     updatedItems[index][name] = value;
     setFormData({ ...formData, items: updatedItems });
   };
@@ -93,7 +98,7 @@ const QuotationRequestManagement = () => {
     const payload = {
       dueDate: formData.dueDate,
       items: formData.items,
-      suppliers: formData.suppliers.map((supplier) => supplier.value), // Extracting _id from selected suppliers
+      suppliers: formData.suppliers.map((supplier:any) => supplier.value), // Extracting _id from selected suppliers
       notes: formData.notes,
       submittedBy: user?._id,
     };
@@ -267,12 +272,12 @@ const QuotationRequestManagement = () => {
             </div>
             <div>
               <label className="block text-sm mb-2">Items</label>
-              {formData.items.map((item, index) => (
+              {formData.items.map((item:any, index:number) => (
                 <div key={index} className="flex gap-2 mb-2">
                   <select
                     name="maximoId"
                     value={item.maximoId}
-                    onChange={(e) => handleItemChange(index, e)}
+                    onChange={(e:any) => handleItemChange(index, e)}
                     className="w-full border rounded px-3 py-2"
                   >
                     <option value="">Select Material</option>

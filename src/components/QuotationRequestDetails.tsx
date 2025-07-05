@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { useNavigate, useParams } from "react-router-dom";
+import {  useParams } from "react-router-dom";
 import {
   getQuotations,
   createQuotation,
@@ -39,7 +39,6 @@ const QuotationRequestDetails = () => {
   const [expectedDeliveryDate, setExpectedDeliveryDate] = useState("");
   const [paymentTerms, setPaymentTerms] = useState("");
 
-  const navigate = useNavigate();
   console.log({ quotationRequest, quotations });
 
   useEffect(() => {
@@ -101,15 +100,7 @@ const QuotationRequestDetails = () => {
     setShowModal(true); // Open the modal to create a new quotation
   };
 
-  const handleFormChange = (
-    e: React.ChangeEvent<
-      HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement
-    >,
-  ) => {
-    const { name, value } = e.target;
-    setFormData({ ...formData, [name]: value });
-  };
-
+  
   const handleItemChange = (
     index: number,
     e: React.ChangeEvent<HTMLInputElement>,
@@ -128,16 +119,7 @@ const QuotationRequestDetails = () => {
     setFormData({ ...formData, items: updatedItems });
   };
 
-  const handleAddItem = () => {
-    setFormData({
-      ...formData,
-      items: [
-        ...formData.items,
-        { maximoId: "", quantity: 0, pricePerUnit: 0, totalPrice: 0 },
-      ],
-    });
-  };
-
+  
   const handleSubmitQuotation = async () => {
     const payload = {
       quotationRequestId: id,
@@ -167,7 +149,7 @@ const QuotationRequestDetails = () => {
               </tr>
             </thead>
             <tbody>
-              {quotationRequest?.items.map((item: any, index: number) => (
+              {quotationRequest?.items.map((item: any) => (
                 <tr key={item._id}>
                   <td className="px-4 py-2 text-sm sm:text-base">
                     {item.maximoId} - {item.material.description}
