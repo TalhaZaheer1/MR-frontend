@@ -9,9 +9,10 @@ import {
   CartesianGrid,
   Legend,
 } from "recharts";
-import {  getDashboardStats } from "../services/api";
+import { getDashboardStats } from "../services/api";
 import toast from "react-hot-toast";
 import AdminBackupButton from "./AdminBackupButton";
+import { useAuth } from "../providers/AuthProvider";
 
 interface StatGroup {
   [key: string]: number;
@@ -24,6 +25,7 @@ interface DashboardData {
 }
 
 export default function Dashboard() {
+  const {user} = useAuth();
   const [stats, setStats] = useState<DashboardData>({});
 
   async function fetchData() {
@@ -40,6 +42,8 @@ export default function Dashboard() {
     fetchData();
   }, []);
 
+  console.log({ stats });
+
   const formatStatsToChartData = (data: StatGroup) => {
     return Object.entries(data).map(([key, value]) => ({
       name: key
@@ -50,11 +54,13 @@ export default function Dashboard() {
   };
 
   const chartCards = Object.entries(stats)
-    .filter(([key, val]) => typeof val === "object" && !Array.isArray(val) && key)
+    .filter(
+      ([key, val]) => typeof val === "object" && !Array.isArray(val) && key,
+    )
     .map(([title, statObj], index) => (
       <div
         key={index}
-        className="p-4 rounded-2xl shadow-md bg-white w-full flex justify-center"
+        className="p-4 rounded-2xl shadow-md bg-white w-full flex flex-col justify-center"
       >
         <h2 className="text-base sm:text-lg font-semibold mb-4 capitalize text-center">
           {title.replace(/([A-Z])/g, " $1")}
@@ -62,7 +68,7 @@ export default function Dashboard() {
         <ResponsiveContainer width="100%" height={300}>
           <BarChart data={formatStatsToChartData(statObj as StatGroup)}>
             <CartesianGrid strokeDasharray="3 3" />
-            <XAxis dataKey="name" tick={{ fontSize: 12 }} />
+            <XAxis dataKey="name" tick={{ fontSize: 8 }} />
             <YAxis />
             <Tooltip />
             <Legend />
@@ -75,7 +81,7 @@ export default function Dashboard() {
   return (
     <div className="flex w-full p-6 flex-col sm:pl-[18rem]">
       <h1 className="text-xl sm:text-2xl font-bold mb-10">Dashboard</h1>
-     <AdminBackupButton /> 
+      {user?.role === "admin" && <AdminBackupButton />}
       <div className=" grid grid-cols-1 sm:grid-cols-2 md:grid-cols-2 gap-6 ">
         {/* Dashboard charts */}
         {chartCards.length > 0 ? chartCards : <p>Loading dashboard...</p>}

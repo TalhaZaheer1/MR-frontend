@@ -1,24 +1,28 @@
-
 import { Routes, Route, useNavigate } from "react-router";
 import LoginPage from "./pages/Login";
 import Layout from "./components/Layout";
 import UserManagement from "./components/UserManagement";
 import MaterialManagement from "./components/MaterialMasterList";
 import MaterialRequestManagement from "./components/MaterialRequestManagement";
-import QuotationManagement from "./components/RFQ";
 import Dashboard from "./components/Dashboard";
 import { useEffect } from "react";
+import { useAuth } from "./providers/AuthProvider";
+import QuotationRequestManagement from "./components/QuotationRequests";
+import QuotationRequestDetails from "./components/QuotationRequestDetails";
+import QuotationManagement from "./components/QuotationManagement";
+import PoManagement from "./components/PoManagements";
 
 function App() {
-
-const navigate = useNavigate();
+  const navigate = useNavigate();
+  const { user } = useAuth();
 
   useEffect(() => {
-    if (window.location.pathname === '/') {
-      navigate('/login');
+    if (window.location.pathname === "/") {
+      if (user) navigate("/dashboard");
+      else navigate("/login");
     }
   }, [navigate]);
-  
+
   return (
     <div>
       {/* Routes */}
@@ -32,7 +36,13 @@ const navigate = useNavigate();
             element={<MaterialRequestManagement />}
           />
           <Route path="materials" element={<MaterialManagement />} />
-          <Route path="rfq" element={<QuotationManagement />} />
+          <Route
+            path="quotation-requests"
+            element={<QuotationRequestManagement />}
+          />
+          <Route path="po" element={<PoManagement />} />
+          <Route path="quotation-requests/:id" element={<QuotationRequestDetails />} />
+          <Route path="quotations" element={<QuotationManagement />} />
         </Route>
       </Routes>
     </div>
@@ -40,4 +50,3 @@ const navigate = useNavigate();
 }
 
 export default App;
-

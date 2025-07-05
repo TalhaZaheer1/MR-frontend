@@ -9,6 +9,9 @@ const roleRoutes: Record<string, { name: string; path: string }[]> = {
     { name: "Manage Materials", path: "materials" },
     { name: "Material Requests", path: "material-requests" },
     { name: "Users", path: "users" },
+    { name: "Quotation Requests", path: "quotation-requests" },
+    { name: "Quotations", path: "/quotations" },
+    { name: "Purchase Orders", path: "/po" },
   ],
   department: [
     { name: "Dashboard", path: "/dashboard" },
@@ -17,21 +20,25 @@ const roleRoutes: Record<string, { name: string; path: string }[]> = {
   invoicing: [
     { name: "Dashboard", path: "/dashboard" },
     { name: "Invoices", path: "/" },
+    { name: "Purchase Orders", path: "/po" },
   ],
   store: [
     { name: "Dashboard", path: "/dashboard" },
     { name: "Store Status", path: "/" },
+    { name: "Purchase Orders", path: "/po" },
   ],
   purchasing: [
     { name: "Dashboard", path: "/dashboard" },
-    { name: "Purchase Orders", path: "/" },
+    { name: "Purchase Orders", path: "/po" },
     { name: "Material Requests", path: "material-requests" },
-    {
-      name: "Quotations",
-      path: "rfq",
-    },
+    { name: "Quotation Requests", path: "quotation-requests" },
   ],
-  supplier: [{ name: "Quotations", path: "/" }],
+  supplier: [
+    { name: "Quotations", path: "/quotations" },
+    { name: "Purchase Orders", path: "/po" },
+    { name: "Quotation Requests", path: "quotation-requests" },
+
+  ],
 };
 
 const Sidebar = () => {

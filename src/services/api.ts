@@ -57,12 +57,35 @@ export const updateMaterial = (id: string, payload: any) =>
   request(`/material/update/${id}`, "POST", payload);
 
 export const getAllSuppliers = () => request("/user/suppliers");
-export const createQuotation = (payload: any) =>
-  request("/rfq", "POST", payload);
 export const bulkCreateQuotation = (payload: any) =>
   request("/rfq/bulk", "POST", payload);
 export const getUserQuotations = () => request("/rfq/my");
 export const getDashboardStats = () => request("/user/dashboard");
 
+export const createQuotationRequest = (payload: any) => request("/quotation-request", "POST", payload);
+export const getPurchasingQuotationRequests = () => request("/quotation-request/purchasing");
+export const getSupplierQuotationRequests = () => request("/quotation-request/supplier");
+export const getQuotationRequestById = (id: string) => request(`/quotation-request/details/${id}`);
+export const getAllQuotationRequests = () => request("/quotation-request/all")
+export const closeQuotationRequests = (id:string) => request(`/quotation-request/close/${id}`)
+export const closeQuotationRequestDetails = (id:string) => request(`/quotation-request/${id}`)
+
+//quotations
+export const getQuotations = (requestId:string) => request(`/quotation/purchasing/${requestId}`);
+export const createQuotation = (payload:any) => request(`/quotation`,"POST",payload);
+export const approveQuotaion = (payload:any) => request("/quotation/approve","POST",payload);
+export const rejectQuotaion = (payload:any) => request("/quotation/reject","POST",payload);
+export const getSupplierQuotations = () => request("/quotation/supplier");
+export const getAllQuotations = () => request("/quotation");
+
+// purchase orders
+export const getPurchasingPOs = () => request("/po/purchasing");
+export const getSupplierPOs = () => request("/po/supplier");
+export const rejectDelivery = (payload: any) => request("/po/reject-delivery", "POST", payload);
+export const partiallyDeliver = (payload: any) => request("/po/partially-deliver", "POST", payload);
+export const changeStatus = (payload: any) => request("/po/change-status", "POST", payload);
+export const getRecievedPOs = () => request("/po/recieved");
+export const getAllPOs = () => request("/po")
 
 export const adminBackup = () => request("/user/backup");
+export const getUserNotifications = () => request("/notification");

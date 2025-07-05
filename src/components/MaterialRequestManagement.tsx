@@ -108,12 +108,17 @@ const MaterialRequestManagement = () => {
   };
 
   const handleAction = async (action: string, request: MaterialRequest) => {
-    if (action === "approve") await approveRequest({ requestId: request._id });
-    if (action === "reject") setConfirmRejectId(request._id);
-    if (action === "supply") await supplyRequest({ requestId: request._id });
-    if (action === "recieve")
-      await recieveRequest({ requestId: request._id, quality: "confirmed" });
-    fetchRequests();
+    try {
+      if (action === "approve")
+        await approveRequest({ requestId: request._id });
+      if (action === "reject") setConfirmRejectId(request._id);
+      if (action === "supply") await supplyRequest({ requestId: request._id });
+      if (action === "recieve")
+        await recieveRequest({ requestId: request._id, quality: "confirmed" });
+      fetchRequests();
+    } catch (error: any) {
+      toast.error(error.message);
+    }
   };
 
   const submitRejection = async () => {
@@ -200,7 +205,7 @@ const MaterialRequestManagement = () => {
 
   return (
     <div className="p-6 w-full sm:pl-[18rem]">
-        <div className="flex flex-col md:flex-row justify-between items-center mb-4">
+      <div className="flex flex-col md:flex-row justify-between items-center mb-4">
         <h2 className="text-lg sm:text-xl font-semibold">Material Requests</h2>
         <div className="flex flex-col sm:flex-row gap-3">
           {canCreateRequest && (
@@ -284,7 +289,8 @@ const MaterialRequestManagement = () => {
                 <td className="flex flex-wrap gap-2">
                   {user?.role === "department" && req.status === "rejected" && (
                     <button
-                      onClick={() => {
+                      onClick={(e) => {
+                        e.stopPropagation();
                         setEditingRequest(req);
                         setForm(req);
                         setShowFormModal(true);
@@ -299,18 +305,22 @@ const MaterialRequestManagement = () => {
                       req.status === "partially supplied") && (
                       <>
                         <button
-                          onClick={() => handleAction("recieve", req)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAction("recieve", req);
+                          }}
                           className="px-3 py-1 text-sm sm:text-base bg-green-600 text-white rounded hover:bg-green-700"
                         >
                           Confirm
                         </button>
                         <button
-                          onClick={() =>
+                          onClick={(e) => {
+                            e.stopPropagation();
                             recieveRequest({
                               requestId: req._id,
                               quality: "rejected",
-                            })
-                          }
+                            });
+                          }}
                           className="px-3 py-1 text-sm sm:text-base bg-red-600 text-white rounded hover:bg-red-700"
                         >
                           Reject Quality
@@ -321,13 +331,19 @@ const MaterialRequestManagement = () => {
                     req.status === "pending approval" && (
                       <>
                         <button
-                          onClick={() => handleAction("approve", req)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAction("approve", req);
+                          }}
                           className="px-3 py-1 text-sm sm:text-base bg-green-600 text-white rounded hover:bg-green-700"
                         >
                           Approve
                         </button>
                         <button
-                          onClick={() => handleAction("reject", req)}
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            handleAction("reject", req);
+                          }}
                           className="px-3 py-1 text-sm sm:text-base bg-red-600 text-white rounded hover:bg-red-700"
                         >
                           Reject
@@ -337,7 +353,10 @@ const MaterialRequestManagement = () => {
                   {(user?.role === "admin" || user?.role === "purchasing") &&
                     req.status === "approved" && (
                       <button
-                        onClick={() => handleAction("supply", req)}
+                        onClick={(e) => {
+                          e.stopPropagation();
+                          handleAction("supply", req);
+                        }}
                         className="px-3 py-1 text-sm sm:text-base bg-indigo-600 text-white rounded hover:bg-indigo-700"
                       >
                         Supply
@@ -514,4 +533,3 @@ const MaterialRequestManagement = () => {
 };
 
 export default MaterialRequestManagement;
-
