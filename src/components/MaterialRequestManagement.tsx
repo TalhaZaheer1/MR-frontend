@@ -34,11 +34,11 @@ interface MaterialRequest {
 
 const getPriorityColor = (priority: string) => {
   switch (priority) {
-    case "Medium":
+    case "medium":
       return "text-yellow-600 bg-yellow-100";
-    case "Low":
+    case "low":
       return "text-blue-600 bg-blue-100";
-    case "High":
+    case "high":
       return "text-green-600 bg-green-100";
   }
 };
