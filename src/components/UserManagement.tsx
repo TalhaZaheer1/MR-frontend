@@ -43,7 +43,7 @@ export default function UserManagement() {
   const [isCreating, setIsCreating] = useState(false);
   const [showPassword, setShowPassword] = useState(false);
   const [form, setForm] = useState<any>({});
-  console.log({email:selectedUser?.email})
+  console.log({ email: selectedUser?.email });
   const fetchData = async () => {
     const { users } = await getAllUsers();
     const { departments } = await getAllDepartments();
@@ -310,25 +310,27 @@ export default function UserManagement() {
                   </select>
                 </div>
 
-                <div>
-                  <label className="block text-sm sm:text-base font-medium text-gray-700 mb-1">
-                    Department
-                  </label>
-                  <select
-                    className="w-full border rounded px-3 py-2"
-                    value={form.department?._id || form.department || ""}
-                    onChange={(e) =>
-                      setForm({ ...form, department: e.target.value })
-                    }
-                  >
-                    <option value="">Select Department</option>
-                    {departments.map((d) => (
-                      <option key={d._id} value={d._id}>
-                        {d.name}
-                      </option>
-                    ))}
-                  </select>
-                </div>
+                {form.role === "department" && (
+                  <div>
+                    <label className="block text-sm sm:text-base font-medium text-gray-700 mb-1">
+                      Department
+                    </label>
+                    <select
+                      className="w-full border rounded px-3 py-2"
+                      value={form.department?._id || form.department || ""}
+                      onChange={(e) =>
+                        setForm({ ...form, department: e.target.value })
+                      }
+                    >
+                      <option value="">Select Department</option>
+                      {departments.map((d) => (
+                        <option key={d._id} value={d._id}>
+                          {d.name}
+                        </option>
+                      ))}
+                    </select>
+                  </div>
+                )}
               </div>
 
               <div className="flex justify-end mt-6">

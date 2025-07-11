@@ -25,7 +25,6 @@ const request = async (endpoint: string, method = "GET", data = null) => {
   }
 };
 
-export const getAllDepartments = () => request("/department");
 export const registerUser = (payload: any) =>
   request("/user/register", "POST", payload);
 export const bulkRegister = (payload: any) =>
@@ -45,6 +44,8 @@ export const supplyRequest = (payload: any) =>
   request("/request/supply-request", "POST", payload);
 export const bulkAddRequests = (payload: any) =>
   request("/request/bulk-add", "POST", payload);
+export const bulkAddRequestsFromFile = (payload: any) =>
+  request("/request/bulk-from-file", "POST", payload);
 export const repairRequest = (payload: any) =>
   request("/request/repair", "POST", payload);
 
@@ -52,7 +53,8 @@ export const createMaterial = (payload: any) =>
   request("/material", "POST", payload);
 export const bulkCreateMaterials = (payload: any) =>
   request("/material/bulk", "POST", payload);
-export const getAllMaterials = () => request("/material");
+export const getAllMaterials = (page: number = 1) =>
+  request(`/material?page${page}&pageSize=15`);
 export const updateMaterial = (id: string, payload: any) =>
   request(`/material/update/${id}`, "POST", payload);
 
@@ -62,30 +64,50 @@ export const bulkCreateQuotation = (payload: any) =>
 export const getUserQuotations = () => request("/rfq/my");
 export const getDashboardStats = () => request("/user/dashboard");
 
-export const createQuotationRequest = (payload: any) => request("/quotation-request", "POST", payload);
-export const getPurchasingQuotationRequests = () => request("/quotation-request/purchasing");
-export const getSupplierQuotationRequests = () => request("/quotation-request/supplier");
-export const getQuotationRequestById = (id: string) => request(`/quotation-request/details/${id}`);
-export const getAllQuotationRequests = () => request("/quotation-request/all")
-export const closeQuotationRequests = (id:string) => request(`/quotation-request/close/${id}`)
-export const closeQuotationRequestDetails = (id:string) => request(`/quotation-request/${id}`)
+export const createQuotationRequest = (payload: any) =>
+  request("/quotation-request", "POST", payload);
+export const getPurchasingQuotationRequests = () =>
+  request("/quotation-request/purchasing");
+export const getSupplierQuotationRequests = () =>
+  request("/quotation-request/supplier");
+export const getQuotationRequestById = (id: string) =>
+  request(`/quotation-request/details/${id}`);
+export const getAllQuotationRequests = () => request("/quotation-request/all");
+export const closeQuotationRequests = (id: string) =>
+  request(`/quotation-request/close/${id}`);
+export const closeQuotationRequestDetails = (id: string) =>
+  request(`/quotation-request/${id}`);
 
 //quotations
-export const getQuotations = (requestId:string) => request(`/quotation/purchasing/${requestId}`);
-export const createQuotation = (payload:any) => request(`/quotation`,"POST",payload);
-export const approveQuotaion = (payload:any) => request("/quotation/approve","POST",payload);
-export const rejectQuotaion = (payload:any) => request("/quotation/reject","POST",payload);
+export const getQuotations = (requestId: string) =>
+  request(`/quotation/purchasing/${requestId}`);
+export const createQuotation = (payload: any) =>
+  request(`/quotation`, "POST", payload);
+export const approveQuotaion = (payload: any) =>
+  request("/quotation/approve", "POST", payload);
+export const rejectQuotaion = (payload: any) =>
+  request("/quotation/reject", "POST", payload);
 export const getSupplierQuotations = () => request("/quotation/supplier");
 export const getAllQuotations = () => request("/quotation");
 
 // purchase orders
 export const getPurchasingPOs = () => request("/po/purchasing");
 export const getSupplierPOs = () => request("/po/supplier");
-export const rejectDelivery = (payload: any) => request("/po/reject-delivery", "POST", payload);
-export const partiallyDeliver = (payload: any) => request("/po/partially-deliver", "POST", payload);
-export const changeStatus = (payload: any) => request("/po/change-status", "POST", payload);
+export const rejectDelivery = (payload: any) =>
+  request("/po/reject-delivery", "POST", payload);
+export const partiallyDeliver = (payload: any) =>
+  request("/po/partially-deliver", "POST", payload);
+export const changeStatus = (payload: any) =>
+  request("/po/change-status", "POST", payload);
 export const getRecievedPOs = () => request("/po/recieved");
-export const getAllPOs = () => request("/po")
+export const getAllPOs = () => request("/po");
+
+//department
+export const getAllDepartments = () => request("/department");
+export const createDepartment = (payload: any) =>
+  request("/department", "POST", payload);
+export const updateDepartment = (payload: any) =>
+  request(`/department/update/${payload._id}`, "POST", payload);
 
 export const adminBackup = () => request("/user/backup");
 export const getUserNotifications = () => request("/notification");

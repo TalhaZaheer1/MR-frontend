@@ -12,6 +12,7 @@ const roleRoutes: Record<string, { name: string; path: string }[]> = {
     { name: "Quotation Requests", path: "quotation-requests" },
     { name: "Quotations", path: "/quotations" },
     { name: "Purchase Orders", path: "/po" },
+{name:"Departments",path:"/department"}
   ],
   department: [
     { name: "Dashboard", path: "/dashboard" },

@@ -7,20 +7,13 @@ import {
   rejectRequest,
   recieveRequest,
   supplyRequest,
-  bulkAddRequests,
-  getAllMaterials,
-  repairRequest,
+  bulkAddRequestsFromFile,
 } from "../services/api";
 import { Dialog } from "@headlessui/react";
 import { Table } from "@mantine/core";
 import { useAuth } from "../providers/AuthProvider";
 import toast from "react-hot-toast";
-
-interface Material {
-  _id: string;
-  maximoId: string;
-  description: string;
-}
+import { useNavigate } from "react-router";
 
 interface MaterialRequest {
   _id: string;
@@ -28,11 +21,27 @@ interface MaterialRequest {
   quantity: number;
   status: string;
   purpose: string;
+  priority: string;
   requesterId?: any;
   requestDate?: string;
   approvalDate?: string;
   reason?: string;
+  serial: string;
+  itemNumber: number;
+  description: string;
+  workOrders: string;
 }
+
+const getPriorityColor = (priority: string) => {
+  switch (priority) {
+    case "Medium":
+      return "text-yellow-600 bg-yellow-100";
+    case "Low":
+      return "text-blue-600 bg-blue-100";
+    case "High":
+      return "text-green-600 bg-green-100";
+  }
+};
 
 const getStatusColor = (status: string) => {
   switch (status) {
@@ -58,20 +67,23 @@ const getStatusColor = (status: string) => {
 const MaterialRequestManagement = () => {
   const { user } = useAuth();
   const [requests, setRequests] = useState<MaterialRequest[]>([]);
+  //@ts-ignore
   const [form, setForm] = useState({
     materialMaximoId: "",
     quantity: 0,
     purpose: "",
   });
+  //@ts-ignore
   const [showFormModal, setShowFormModal] = useState(false);
+  //@ts-ignore
   const [editingRequest, setEditingRequest] = useState<MaterialRequest | null>(
     null,
   );
-  const [materials, setMaterials] = useState<Material[]>([]);
   const [rejectionReason, setRejectionReason] = useState("");
   const [confirmRejectId, setConfirmRejectId] = useState<string | null>(null);
   const [selectedRequest, setSelectedRequest] =
     useState<MaterialRequest | null>(null);
+  const navigate = useNavigate();
 
   const fetchRequests = async () => {
     if (!user) return;
@@ -86,27 +98,26 @@ const MaterialRequestManagement = () => {
 
   useEffect(() => {
     fetchRequests();
-    getAllMaterials().then((res) => setMaterials(res.materials));
   }, [user]);
 
-  const handleSubmit = async () => {
-    if (!user) return;
-    const payload = {
-      ...form,
-      requesterId: user._id,
-      requestDate: new Date().toLocaleString(),
-    };
-    if (editingRequest) {
-      await repairRequest({ ...payload, requestId: editingRequest._id });
-    } else {
-      await bulkAddRequests({ requests: [payload] });
-    }
-    setForm({ materialMaximoId: "", quantity: 0, purpose: "" });
-    setEditingRequest(null);
-    setShowFormModal(false);
-    fetchRequests();
-  };
-
+  // const handleSubmit = async () => {
+  //   if (!user) return;
+  //   const payload = {
+  //     ...form,
+  //     requesterId: user._id,
+  //     requestDate: new Date().toLocaleString(),
+  //   };
+  //   if (editingRequest) {
+  //     await repairRequest({ ...payload, requestId: editingRequest._id });
+  //   } else {
+  //     await bulkAddRequests({ requests: [payload] });
+  //   }
+  //   setForm({ materialMaximoId: "", quantity: 0, purpose: "" });
+  //   setEditingRequest(null);
+  //   setShowFormModal(false);
+  //   fetchRequests();
+  // };
+  //
   const handleAction = async (action: string, request: MaterialRequest) => {
     try {
       if (action === "approve")
@@ -131,6 +142,8 @@ const MaterialRequestManagement = () => {
     setRejectionReason("");
     fetchRequests();
   };
+
+  console.log({ requests });
 
   const canCreateRequest =
     user?.role === "department" || user?.role === "admin";
@@ -192,10 +205,11 @@ const MaterialRequestManagement = () => {
       ...row,
       requesterId: user._id,
       requestDate: new Date().toISOString(),
+      status: "pending approval",
     }));
 
     try {
-      await bulkAddRequests({ requests: sanitized });
+      await bulkAddRequestsFromFile({ requests: sanitized });
       fetchRequests();
       toast.success("Requests imported successfully");
     } catch (error: any) {
@@ -212,7 +226,7 @@ const MaterialRequestManagement = () => {
             <div className="flex gap-3">
               <button
                 className="px-4 py-2 text-sm sm:text-base bg-blue-600 text-white rounded hover:bg-blue-700 sm:w-auto"
-                onClick={() => setShowFormModal(true)}
+                onClick={() => navigate("create")}
               >
                 + Create Request
               </button>
@@ -245,13 +259,16 @@ const MaterialRequestManagement = () => {
           <thead>
             <tr>
               <th>Serial</th>
+              <th>Item #</th>
               <th>Maximo ID</th>
+              <th>Description</th>
               <th>Quantity</th>
               <th>Status</th>
               <th>Purpose</th>
               <th>Made By</th>
               <th>Request Date</th>
               <th>Approval Date</th>
+              <th>Work Orders</th>
               <th>Reason</th>
               <th>Actions</th>
             </tr>
@@ -263,9 +280,19 @@ const MaterialRequestManagement = () => {
                 className="hover:bg-gray-100 cursor-pointer"
                 onClick={() => setSelectedRequest(req)}
               >
-                <td>{req._id}</td>
+                <td>{req.serial}</td>
+                <td>{req.itemNumber}</td>
                 <td>{req.materialMaximoId}</td>
+                <td>{req.description}</td>
                 <td>{req.quantity}</td>
+                <td>
+                  <span
+                    className={`px-2 py-1 rounded text-sm font-medium ${getPriorityColor(req.priority)}`}
+                  >
+                    {req.priority}
+                  </span>
+                </td>
+
                 <td>
                   <span
                     className={`px-2 py-1 rounded text-sm font-medium ${getStatusColor(req.status)}`}
@@ -285,6 +312,7 @@ const MaterialRequestManagement = () => {
                     ? new Date(req.approvalDate).toLocaleDateString()
                     : "-"}
                 </td>
+                <td>{req.workOrders}</td>
                 <td>{req.status === "rejected" ? req.reason : "-"}</td>
                 <td className="flex flex-wrap gap-2">
                   {user?.role === "department" && req.status === "rejected" && (
@@ -464,7 +492,7 @@ const MaterialRequestManagement = () => {
         </div>
       </Dialog>
 
-      <Dialog
+      {/*      <Dialog
         open={showFormModal}
         onClose={() => {
           setShowFormModal(false);
@@ -527,7 +555,7 @@ const MaterialRequestManagement = () => {
             </div>
           </Dialog.Panel>
         </div>
-      </Dialog>
+      </Dialog> */}
     </div>
   );
 };

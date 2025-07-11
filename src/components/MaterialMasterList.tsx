@@ -22,27 +22,33 @@ type Material = {
   initialStock: number;
   currentStock: number;
   lowStock: boolean;
-  lowStockValue: number;
+  lowStockValue: number
 };
 
 export default function MaterialManagement() {
   const [materials, setMaterials] = useState<Material[]>([]);
+   //@ts-ignore 
   const [selectedMaterial, setSelectedMaterial] = useState<Material | null>(
     null,
   );
-console.log(selectedMaterial);
   const [showFormModal, setShowFormModal] = useState(false);
   const [isCreating, setIsCreating] = useState(false);
   const [form, setForm] = useState<any>({});
+  
+  // Pagination State
+  const [page, setPage] = useState(1);
+  const [totalMaterials, setTotalMaterials] = useState(0);
+  const materialsPerPage = 10;
 
   const fetchData = async () => {
-    const { materials } = await getAllMaterials();
+    const { materials, pagination } = await getAllMaterials(page);
     setMaterials(materials);
+    setTotalMaterials(pagination.totalMaterials);
   };
 
   useEffect(() => {
     fetchData();
-  }, []);
+  }, [page]);
 
   const openEdit = (material: Material) => {
     setSelectedMaterial(material);
@@ -142,6 +148,15 @@ console.log(selectedMaterial);
     }
   };
 
+  // Pagination Controls
+  const handlePrevPage = () => {
+    if (page > 1) setPage(page - 1);
+  };
+
+  const handleNextPage = () => {
+    if (page * materialsPerPage < totalMaterials) setPage(page + 1);
+  };
+
   return (
     <ProtectedAdmin>
       <div className="p-6 w-full sm:pl-[18rem]">
@@ -153,7 +168,7 @@ console.log(selectedMaterial);
               className="px-4 py-2 text-sm sm:text-base bg-blue-600 text-white rounded hover:bg-blue-700 w-full sm:w-auto"
               onClick={openCreate}
             >
-              + Create Material 
+              + Create Material
             </button>
             <label
               htmlFor="import-users"
@@ -176,7 +191,29 @@ console.log(selectedMaterial);
             </button>
           </div>
         </div>
-         {/* Make the table horizontally scrollable on small screens */}
+
+        {/* Pagination Controls */}
+        <div className="flex justify-between mb-4">
+          <button
+            className="px-4 py-2 text-sm bg-gray-600 text-white rounded hover:bg-gray-700"
+            onClick={handlePrevPage}
+            disabled={page === 1}
+          >
+            Previous
+          </button>
+          <span className="text-sm">
+            Page {page} of {Math.ceil(totalMaterials / materialsPerPage)}
+          </span>
+          <button
+            className="px-4 py-2 text-sm bg-gray-600 text-white rounded hover:bg-gray-700"
+            onClick={handleNextPage}
+            disabled={page * materialsPerPage >= totalMaterials}
+          >
+            Next
+          </button>
+        </div>
+
+        {/* Table for Material Management */}
         <div className="overflow-x-auto">
           <Table striped highlightOnHover className="rounded w-full shadow">
             <thead>
@@ -212,6 +249,7 @@ console.log(selectedMaterial);
           </Table>
         </div>
 
+        {/* Material Edit/Creation Dialog */}
         <Dialog
           open={showFormModal}
           onClose={() => setShowFormModal(false)}
@@ -316,7 +354,7 @@ console.log(selectedMaterial);
                       ...form,
                       currentStock: parseInt(e.target.value) || 0,
                     })}
-                    />
+                />
               </div>
 
               <div>
@@ -332,7 +370,7 @@ console.log(selectedMaterial);
                       ...form,
                       lowStockValue: parseInt(e.target.value) || 0,
                     })}
-                    />
+                />
               </div>
 
               <div className="flex justify-end mt-6">

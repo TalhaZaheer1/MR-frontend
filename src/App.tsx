@@ -11,6 +11,8 @@ import QuotationRequestManagement from "./components/QuotationRequests";
 import QuotationRequestDetails from "./components/QuotationRequestDetails";
 import QuotationManagement from "./components/QuotationManagement";
 import PoManagement from "./components/PoManagements";
+import DepartmentManagement from "./components/DepartmentManagement";
+import CreateMaterialRequest from "./components/CreateMaterialRequest";
 
 function App() {
   const navigate = useNavigate();
@@ -35,14 +37,22 @@ function App() {
             path="material-requests"
             element={<MaterialRequestManagement />}
           />
+          <Route
+            path="material-requests/create"
+            element={<CreateMaterialRequest />}
+          />
           <Route path="materials" element={<MaterialManagement />} />
           <Route
             path="quotation-requests"
             element={<QuotationRequestManagement />}
           />
           <Route path="po" element={<PoManagement />} />
-          <Route path="quotation-requests/:id" element={<QuotationRequestDetails />} />
+          <Route
+            path="quotation-requests/:id"
+            element={<QuotationRequestDetails />}
+          />
           <Route path="quotations" element={<QuotationManagement />} />
+          <Route path="department" element={<DepartmentManagement />} />
         </Route>
       </Routes>
     </div>
