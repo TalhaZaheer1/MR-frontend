@@ -2,19 +2,18 @@ import { useEffect, useState } from "react";
 import { bulkAddRequests, getAllMaterials } from "../services/api";
 import { Dialog } from "@headlessui/react";
 import { useAuth } from "../providers/AuthProvider";
+import toast from "react-hot-toast";
 
 interface Material {
   _id: string;
   maximoId: string;
   description: string;
-  unit:string,
-  itemType:string
-  quantity:number;
-  workOrders:string 
-  priority:string
+  unit: string;
+  itemType: string;
+  quantity: number;
+  workOrders: string;
+  priority: string;
 }
-
-
 
 const CreateMaterialRequest = () => {
   const { user } = useAuth();
@@ -57,6 +56,15 @@ const CreateMaterialRequest = () => {
   }, [searchQuery, materials]);
 
   const handleSubmit = async () => {
+    // Check if any of the items have a quantity of 0
+    const hasZeroQuantity = form.items.some(
+      (item: Material) => item.quantity <= 0 || typeof Number(item.quantity) !== "number",
+    );
+
+    if (hasZeroQuantity) {
+      toast.error("Please ensure all items have a quantity greater than 0.");
+      return; // Prevent submission
+    }
     if (!user) return;
     const payload = {
       ...form,
@@ -68,8 +76,7 @@ const CreateMaterialRequest = () => {
     setShowFormModal(false);
   };
 
-  const canCreateRequest =
-    user?.role === "department" ;
+  const canCreateRequest = user?.role === "department";
 
   // Handle adding an item to the request
   const handleAddItem = (item: Material) => {
@@ -77,12 +84,12 @@ const CreateMaterialRequest = () => {
       maximoId: item.maximoId,
       unit: item.unit,
       itemType: item.itemType,
-      description:item.description,
-      priority: "low", // Default priority
+      description: item.description,
+      priority: "Low", // Default priority
       workOrders: "", // Default workOrders
       quantity: 0,
     };
-    setForm((prevForm:any) => ({
+    setForm((prevForm: any) => ({
       ...prevForm,
       items: [...prevForm.items, newItem],
     }));
@@ -96,6 +103,13 @@ const CreateMaterialRequest = () => {
     const { name, value } = e.target;
     const updatedItems = [...form.items];
     updatedItems[index][name] = value;
+    setForm({ ...form, items: updatedItems });
+  };
+
+  // Handle removing an item from the selected items list
+  const handleDeleteItem = (index: number) => {
+    const updatedItems = [...form.items];
+    updatedItems.splice(index, 1); // Remove the item at the given index
     setForm({ ...form, items: updatedItems });
   };
 
@@ -176,7 +190,7 @@ const CreateMaterialRequest = () => {
       <div className="mb-4">
         <h3 className="font-semibold">Selected Items</h3>
         <div>
-          {form.items.map((item:Material, index:number) => (
+          {form.items.map((item: Material, index: number) => (
             <div
               key={index}
               className="flex items-center justify-between border-b py-2"
@@ -191,9 +205,9 @@ const CreateMaterialRequest = () => {
                   onChange={(e) => handleItemChange(index, e)}
                   className="p-2 border rounded"
                 >
-                  <option value="low">Low</option>
-                  <option value="medium">Medium</option>
-                  <option value="high">High</option>
+                  <option value="Low">Low</option>
+                  <option value="Medium">Medium</option>
+                  <option value="High">High</option>
                 </select>
                 <input
                   type="number"
@@ -211,6 +225,12 @@ const CreateMaterialRequest = () => {
                   placeholder="Work Order"
                   className="p-2 border rounded"
                 />
+                <button
+                  onClick={() => handleDeleteItem(index)}
+                  className="px-4 py-2 text-sm bg-red-600 text-white rounded hover:bg-red-700"
+                >
+                  Delete
+                </button>
               </div>
             </div>
           ))}
