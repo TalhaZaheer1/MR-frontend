@@ -85,7 +85,7 @@ const CreateMaterialRequest = () => {
       unit: item.unit,
       itemType: item.itemType,
       description: item.description,
-      priority: "Low", // Default priority
+      priority: "low", // Default priority
       workOrders: "", // Default workOrders
       quantity: 0,
     };
@@ -205,9 +205,9 @@ const CreateMaterialRequest = () => {
                   onChange={(e) => handleItemChange(index, e)}
                   className="p-2 border rounded"
                 >
-                  <option value="Low">Low</option>
-                  <option value="Medium">Medium</option>
-                  <option value="High">High</option>
+                  <option value="low">Low</option>
+                  <option value="medium">Medium</option>
+                  <option value="high">High</option>
                 </select>
                 <input
                   type="number"
