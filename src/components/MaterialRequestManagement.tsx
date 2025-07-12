@@ -151,24 +151,32 @@ const MaterialRequestManagement = () => {
   const handleExport = () => {
     const exportData = requests.map(
       ({
-        _id,
+        serial,
+        itemNumber,
         materialMaximoId,
+        description,
         quantity,
+        priority,
         status,
         purpose,
         requesterId,
         requestDate,
         approvalDate,
+        workOrders,
         reason,
       }) => ({
-        _id,
+        serial,
+        itemNumber,
         materialMaximoId,
+        description,
         quantity,
+        priority,
         status,
         purpose,
         requester: requesterId?.username || requesterId, // show readable name if available
         requestDate,
         approvalDate,
+        workOrders, 
         reason,
       }),
     );
@@ -263,6 +271,7 @@ const MaterialRequestManagement = () => {
               <th>Maximo ID</th>
               <th>Description</th>
               <th>Quantity</th>
+              <th>Priority</th>
               <th>Status</th>
               <th>Purpose</th>
               <th>Made By</th>
